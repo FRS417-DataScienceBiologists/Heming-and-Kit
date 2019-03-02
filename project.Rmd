@@ -1,0 +1,38 @@
+---
+title: "project"
+output: html_document
+---
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+
+```{r}
+prof_salary <-
+  readr::read_csv("/users/kit/Desktop/frs417/salaries_prof.csv")
+```
+
+```{r}
+skim(prof_salary)
+```
+```{r}
+glimpse(prof_salary)
+```
+```{r}
+names(prof_salary)
+```
+
+```{r}
+prof_salary
+```
+
+```{r}
+prof_salary %>% 
+  select(rank, salary) %>% 
+  filter(rank=="Prof") %>% 
+  mean(prof_salary[["salary"]])
+```
+
+
+
