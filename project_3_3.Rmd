@@ -1,0 +1,126 @@
+---
+title: "Project"
+output: 
+  html_document: 
+    keep_md: yes
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Load the data
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+
+```{r}
+prof_salary <-
+  readr::read_csv("salaries_prof.csv")
+```
+#Have a glance of the data
+```{r}
+glimpse(prof_salary)
+```
+```{r}
+prof_salary %>% 
+  skimr::skim()
+```
+
+
+```{r}
+prof_salary
+```
+#Rename the column to make it tidy
+```{r}
+prof_salary_tidy <-prof_salary %>% 
+  dplyr::rename(
+    Participants = X1,
+    Rank = rank,
+    Yrs_since_PhD = yrs.since.phd,
+    Yrs_service = yrs.service,
+    Sex = sex,
+    Salary = salary)
+prof_salary_tidy
+```
+
+```{r}
+prof_salary_tidy
+```
+#Calculate the average salary of each position
+```{r}
+Mean_Salary <- prof_salary_tidy %>% 
+  group_by(Rank) %>% 
+  summarize(Mean_Salary=(mean(Salary, na.rm = TRUE)))
+Mean_Salary
+```
+#Compare them with a bar plot
+```{r}
+Mean_Salary %>% 
+  ggplot(aes(x=Rank, y=Mean_Salary,color=Rank))+
+  geom_bar(stat="identity")+
+  labs(title = "Mean Salary By Rank of Professors",
+       x = "Rank",
+       y = "Mean Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_colour_brewer(palette = "Dark2")
+```
+#why is this not filling the entire bars???
+#Calculate the avarage salary of each gender
+```{r}
+Mean_Salary_Gender <- prof_salary_tidy %>% 
+  group_by(Sex) %>% 
+  summarize(Mean_Salary=(mean(Salary, na.rm = TRUE)))
+Mean_Salary_Gender
+```
+#Compare them with a bar plot
+```{r}
+Mean_Salary_Gender %>% 
+  ggplot(aes(x=Sex, y=Mean_Salary,color=Sex))+
+  geom_bar(stat="identity")+
+  labs(title = "Mean Salary By Gender",
+       x = "Gender",
+       y = "Mean Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_colour_brewer(palette = "Dark2")
+```
+
+#Make a scatter plot of the money and the years
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Yrs_since_PhD, y=Salary, color=Rank))+
+  geom_point()+
+  geom_smooth(method=lm, se=TRUE)+
+  labs(title = "Salary vs. Years Since PhD",
+       x = "Years Since PhD",
+       y = "Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_colour_brewer(palette = "Dark2")
+```
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Yrs_service, y=Salary, color=Rank))+
+  geom_point()+
+  geom_smooth(method=lm, se=TRUE)+
+  labs(title = "Salary vs. Years Since Service",
+       x = "Years Since Service",
+       y = "Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_colour_brewer(palette = "Dark2")
+```
+
+
+
+
+
+
+
+
