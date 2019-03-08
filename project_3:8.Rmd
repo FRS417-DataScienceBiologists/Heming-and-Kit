@@ -1,0 +1,175 @@
+---
+title: "Project"
+output: 
+  html_document: 
+    keep_md: yes
+---
+```{r}
+library(tidyverse)
+library(dplyr)
+library("RColorBrewer")
+library("paletteer")
+```
+
+```{r}
+prof_salary <-
+  readr::read_csv("/users/kit/Desktop/How-Much-Money-Can-You-Make/salaries_prof.csv")
+```
+
+```{r}
+prof_salary
+```
+
+```{r}
+glimpse(prof_salary)
+```
+
+```{r}
+prof_salary %>% 
+  skimr::skim()
+```
+
+```{r}
+prof_salary_tidy <-prof_salary %>% 
+  dplyr::rename(
+    Participants = X1,
+    Rank = rank,
+    Discipline = discipline,
+    Yrs_since_PhD = yrs.since.phd,
+    Yrs_service = yrs.service,
+    Sex = sex,
+    Salary = salary)
+prof_salary_tidy
+```
+
+```{r}
+prof_salary_tidy
+```
+
+```{r}
+Mean_Salary <- prof_salary_tidy %>% 
+  group_by(Rank) %>% 
+  summarize(Mean_Salary=(mean(Salary, na.rm = TRUE)))
+Mean_Salary
+```
+
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Rank, fill=Sex))+
+  geom_bar(alpha=0.9, color="black")+
+  labs(title = "Mean Salary By Rank of Professors",
+       x = "Rank",
+       y = "# of Individuals")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Discipline, y=Salary, fill=Sex))+
+  geom_boxplot(alpha=0.9, color="black")+
+  labs(title = "Mean Salary By Discipline",
+       x = "Discipline",
+       y = "Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Salary, fill=Sex))+
+  geom_density(alpha=0.65)+
+  labs(title = "Salary in Relation to Gender",
+       x = "Salary",
+       y = "Density")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Salary))+
+  geom_histogram(aes(y = ..density..), binwidth = .4, fill="darkgreen", alpha=0.8, color="black")+
+  geom_density(color="orange")
+```
+
+
+```{r}
+Mean_Salary %>% 
+  ggplot(aes(x=Rank, y=Mean_Salary,fill=Rank))+
+  geom_bar(stat="identity", alpha=0.9, color="black")+
+  labs(title = "Mean Salary By Rank of Professors",
+       x = "Rank",
+       y = "Mean Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+
+```{r}
+Mean_Salary_Gender <- prof_salary_tidy %>% 
+  group_by(Sex) %>% 
+  summarize(Mean_Salary=(mean(Salary, na.rm = TRUE)))
+Mean_Salary_Gender
+```
+
+```{r}
+Mean_Salary_Gender %>% 
+  ggplot(aes(x=Sex, y=Mean_Salary,fill=Sex))+
+  geom_bar(stat="identity", alpha=0.9, color="black")+
+  labs(title = "Mean Salary By Gender",
+       x = "Gender",
+       y = "Mean Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Yrs_since_PhD, y=Salary, color=Rank))+
+  geom_point()+
+  geom_smooth(method=lm, se=TRUE)+
+  labs(title = "Salary vs. Years Since PhD",
+       x = "Years Since PhD",
+       y = "Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_colour_brewer(palette = "Dark2")
+```
+
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Yrs_since_PhD, y=Salary))+
+  geom_point()+
+  facet_wrap(~Rank)
+```
+
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Yrs_service, y=Salary, color=Rank))+
+  geom_point()+
+  geom_smooth(method=lm, se=TRUE)+
+  labs(title = "Salary vs. Years Service",
+       x = "Years Service",
+       y = "Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_colour_brewer(palette = "Dark2")
+```
+
+
+
+
+
+
+
