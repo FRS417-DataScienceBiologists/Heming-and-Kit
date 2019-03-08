@@ -5,19 +5,24 @@ output:
     keep_md: yes
 ---
 ```{r}
-library(tidyverse)
-library(dplyr)
 library("RColorBrewer")
 library("paletteer")
 ```
 
+
+
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
 ```{r}
 prof_salary <-
-<<<<<<< HEAD:project_update.Rmd
-  readr::read_csv("/users/kit/Desktop/gitb/How-Much-Money-Can-You-Make/salaries_prof.csv")
-=======
-  readr::read_csv("/users/kit/Desktop/How-Much-Money-Can-You-Make/salaries_prof.csv")
->>>>>>> 9332a05f256ef0cc2c2465f742d8bf3758493b04:project_3:8.Rmd
+
+  readr::read_csv("salaries_prof.csv")
+
+  
+
 ```
 
 ```{r}
