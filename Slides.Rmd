@@ -1,6 +1,6 @@
 ---
-title: "How Much Money"
-author: "Heming"
+title: "How Much Money Can You Make"
+author: "Heming and Kit"
 date: "Winter 2019"
 output: ioslides_presentation
 ---
@@ -9,64 +9,203 @@ output: ioslides_presentation
 knitr::opts_chunk$set(echo = FALSE)
 library("jpeg")
 ```
-
-## Packages
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
 library(dplyr)
 ```
-
-## What is my project about?
-- Learn to manage, transform, and visualize data using the R programming language  
-- Organize messy data, transform it in ways that address your questions, and communicate results  
-- Can you turn a computer on? Use a mouse? *No programming experience required*  
-
-## Why are you doing this?
-
-> **Want to Make it as a Biologist? Better Learn to Code**  
-> "In biology, big data is the thing. Every day, biologists go into the lab to coax data out of living matter—more and more data, with the advent of biological tools like Crispr/Cas9..."We cannot manually look through 15,000 data points anymore," Udeshi says. To analyze it all, biologists need to write programs specifically tailored for their experiments."  
-> [Wired Magazine (2017)](https://www.wired.com/2017/03/biologists-teaching-code-survive/)
-
-```{r out.width = "50%", fig.align = "center"}
-knitr::include_graphics("images/guinea_pigs.png")
+```{r}
+library("RColorBrewer")
+library("paletteer")
+```
+```{r}
+prof_salary <-
+  readr::read_csv("salaries_prof.csv")
 ```
 
-## Will it hurt?
+## What is our project about?
+We collected a dataset about the salary of professors in college.
+It is from ""
 
-- At first, yup
-- Learning a new "language" is hard and takes practice
-- I am here to guide you, but I won't have all the answers
-- We are a community of learners and will help each other
+This dataset includes:
 
-```{r out.width = "75%", fig.align = "center"}
-knitr::include_graphics("images/will_it_hurt.png")
+- Rank: Professor, Assistant Professor, and Associate Professor
+- Discipline: A and B
+- Years since Phd
+- Years since Service
+- Salary
+
+## Have a look
+```{r}
+prof_salary %>% 
+  skimr::skim()
 ```
 
-## General Information
-
-- Fridays, 1:10-3:00p, 2103 SCC
-- Joel Ledford (jmledford@ucdavis.edu)
-- Office: 2220 Life Sciences, Department of Plant Biology
-
-## Logistics
-
-- Grading is **P/NP**
-- Attendance is mandatory
-- Weekly homework (70%)
-- Group project (30%)
-
-## Enrollment
-
-- There is a waitlist
-- Please be sure you really want to take the class
-- The FRS series has strict limits
-
-```{r eval=FALSE, include=FALSE}
-sample(1:10, 1)
+## Make it tidy
+```{r}
+prof_salary_tidy <-prof_salary %>% 
+  dplyr::rename(
+    Participants = X1,
+    Rank = rank,
+    Discipline = discipline,
+    Yrs_since_PhD = yrs.since.phd,
+    Yrs_service = yrs.service,
+    Sex = sex,
+    Salary = salary)
+prof_salary_tidy
 ```
 
-## Let's Get Started!
-
-```{r out.width = "100%", fig.align = "center"}
-knitr::include_graphics("images/gitty_up.png")
+## Average Salary of Each Rank
+```{r}
+Mean_Salary <- prof_salary_tidy %>% 
+  group_by(Rank) %>% 
+  summarize(Mean_Salary=(mean(Salary, na.rm = TRUE)))
+Mean_Salary
 ```
+
+##Plot of Average Salary of Each Rank
+```{r}
+Mean_Salary %>% 
+  ggplot(aes(x=Rank, y=Mean_Salary,fill=Rank))+
+  geom_bar(stat="identity", alpha=0.9, color="black")+
+  labs(title = "Mean Salary By Rank of Professors",
+       x = "Rank",
+       y = "Mean Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+
+
+## Interesting Plots - Salary Distribution
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Salary))+
+  geom_histogram(aes(y = ..density..), fill="darkgreen", alpha=0.8, color="black")+
+  geom_density(color="orange")
+```
+
+
+## Plots Associated with Gender
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Rank, fill=Sex))+
+  geom_bar(alpha=0.9, color="black", position = position_fill(), stat = "count")+
+  scale_y_continuous(labels = scales::percent)+
+  labs(title = "Gender Distribution within the Ranks of Professors",
+       x = "Rank",
+       y = "# of Individuals")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+
+
+## Plots Associated with Gender
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Salary, fill=Sex))+
+  geom_density(alpha=0.65)+
+  labs(title = "Salary in Relation to Gender",
+       x = "Salary",
+       y = "Density")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+
+## Average Salary of Each Gender
+```{r}
+Mean_Salary_Gender <- prof_salary_tidy %>% 
+  group_by(Sex) %>% 
+  summarize(Mean_Salary=(mean(Salary, na.rm = TRUE)))
+Mean_Salary_Gender
+```
+
+
+## Plots Associated with Gender
+```{r}
+Mean_Salary_Gender %>% 
+  ggplot(aes(x=Sex, y=Mean_Salary,fill=Sex))+
+  geom_bar(stat="identity", alpha=0.9, color="black")+
+  labs(title = "Mean Salary By Gender",
+       x = "Gender",
+       y = "Mean Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+
+
+## Plots Associated with Gender
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Salary, fill=Sex))+
+  geom_density(alpha=0.65)+
+  labs(title = "Salary in Relation to Gender",
+       x = "Salary",
+       y = "Density")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+
+
+## Plots Associated with Gender and Discipline
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Discipline, y=Salary, fill=Sex))+
+  geom_boxplot(alpha=0.9, color="black")+
+  labs(title = "Mean Salary By Discipline",
+       x = "Discipline",
+       y = "Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+
+
+## Plots Associated with Years
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Yrs_since_PhD, y=Salary, color=Rank))+
+  geom_point(size=0.9)+
+  facet_wrap(~Rank)+
+  geom_smooth(method=lm, se=TRUE)+
+  labs(title = "Salary vs. Years Since PhD",
+       x = "Years Since PhD",
+       y = "Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_colour_brewer(palette = "Dark2")
+```
+
+
+## Plots Associated with Years
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Yrs_service, y=Salary, color=Rank))+
+  geom_point(size=0.9)+
+  facet_wrap(~Rank)+
+  geom_smooth(method=lm, se=TRUE)+
+  labs(title = "Salary vs. Years Service",
+       x = "Years Service",
+       y = "Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_colour_brewer(palette = "Dark2")
+```
+
+
+## Conclusion
+
+- Males have advantage over females being professors
+- If you are a teaching faculty, you should try to get promoted
+- Discipline B makes more money than discipline A
