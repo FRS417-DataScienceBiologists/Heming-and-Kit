@@ -4,8 +4,9 @@ author: "Heming Ma and Kit Nga Chou"
 date: "Winter 2019"
 output:
    ioslides_presentation:
-    widescreen: true
-    smaller: true
+     keep_md: yes
+     smaller: yes
+     widescreen: yes
 ---
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
