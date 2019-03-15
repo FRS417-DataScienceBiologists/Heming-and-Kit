@@ -1,32 +1,23 @@
 ---
 title: "How Much Money Can You Make"
-author: "Heming and Kit"
+author: "Heming Ma and Kit Nga Chou"
 date: "Winter 2019"
-output: ioslides_presentation
+output:
+   ioslides_presentation:
+    widescreen: true
+    smaller: true
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-library("jpeg")
-```
-```{r message=FALSE, warning=FALSE}
-library(tidyverse)
-library(dplyr)
-```
-```{r}
-library("RColorBrewer")
-library("paletteer")
-```
+## INTRO
+We are interested in how much money do professors make, and what affects the salary distribution.
+Used data from: "https://vincentarelbundock.github.io/Rdatasets/datasets.html"
 ```{r}
 prof_salary <-
   readr::read_csv("salaries_prof.csv")
 ```
 
-## What is our project about?
-We collected a dataset about the salary of professors in college.
-It is from ""
 
-This dataset includes:
+##This dataset includes:
 
 - Rank: Professor, Assistant Professor, and Associate Professor
 - Discipline: A and B
@@ -34,13 +25,38 @@ This dataset includes:
 - Years since Service
 - Salary
 
-## Have a look
+
+#PACKAGES
+We used the following libraries:
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+library("RColorBrewer")
+library("paletteer")
+```
+
+
+##HAVE A LOOK
 ```{r}
 prof_salary %>% 
   skimr::skim()
 ```
 
-## Make it tidy
+##QUESTIONS?
+1. Who makes the most money?
+2. How does salary differ by ranks?
+3. Does salary differ by gender?
+4. What is discipline?
+5. Does the amount of time you spent on the job affect your income?
+```{r out.width = "30%", fig.align = "center"}
+knitr::include_graphics("profledford.jpg")
+```
+
+
+##MAKE TIDY DATA
 ```{r}
 prof_salary_tidy <-prof_salary %>% 
   dplyr::rename(
@@ -54,7 +70,16 @@ prof_salary_tidy <-prof_salary %>%
 prof_salary_tidy
 ```
 
-## Average Salary of Each Rank
+##OVERALL DISTRIBUTION {.smaller}
+```{r}
+prof_salary_tidy %>% 
+  ggplot(aes(x=Salary))+
+  geom_histogram(aes(y = ..density..), fill="darkgreen", alpha=0.8, color="black")+
+  geom_density(color="orange")
+```
+
+
+##AVERAGE SALARY PER RANK
 ```{r}
 Mean_Salary <- prof_salary_tidy %>% 
   group_by(Rank) %>% 
@@ -62,7 +87,7 @@ Mean_Salary <- prof_salary_tidy %>%
 Mean_Salary
 ```
 
-##Plot of Average Salary of Each Rank
+##PUT THE NUMBERS IN A GRAPH {.smaller}
 ```{r}
 Mean_Salary %>% 
   ggplot(aes(x=Rank, y=Mean_Salary,fill=Rank))+
@@ -75,18 +100,28 @@ Mean_Salary %>%
         axis.title=element_text(size=12))+
   scale_fill_brewer(palette = "Dark2")
 ```
-
-
-## Interesting Plots - Salary Distribution
+##AVERAGE SALARY BY GENDER
 ```{r}
-prof_salary_tidy %>% 
-  ggplot(aes(x=Salary))+
-  geom_histogram(aes(y = ..density..), fill="darkgreen", alpha=0.8, color="black")+
-  geom_density(color="orange")
+Mean_Salary_Gender <- prof_salary_tidy %>% 
+  group_by(Sex) %>% 
+  summarize(Mean_Salary=(mean(Salary, na.rm = TRUE)))
+Mean_Salary_Gender
 ```
 
-
-## Plots Associated with Gender
+##PUT IT IN A GRAPH {.smaller}
+```{r}
+Mean_Salary_Gender %>% 
+  ggplot(aes(x=Sex, y=Mean_Salary,fill=Sex))+
+  geom_bar(stat="identity", alpha=0.9, color="black")+
+  labs(title = "Mean Salary By Gender",
+       x = "Gender",
+       y = "Mean Salary")+
+  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
+        axis.text=element_text(size=8),
+        axis.title=element_text(size=12))+
+  scale_fill_brewer(palette = "Dark2")
+```
+##GENDER DISTRIBUTION {.smaller}
 ```{r}
 prof_salary_tidy %>% 
   ggplot(aes(x=Rank, fill=Sex))+
@@ -102,45 +137,10 @@ prof_salary_tidy %>%
 ```
 
 
-## Plots Associated with Gender
-```{r}
-prof_salary_tidy %>% 
-  ggplot(aes(x=Salary, fill=Sex))+
-  geom_density(alpha=0.65)+
-  labs(title = "Salary in Relation to Gender",
-       x = "Salary",
-       y = "Density")+
-  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
-        axis.text=element_text(size=8),
-        axis.title=element_text(size=12))+
-  scale_fill_brewer(palette = "Dark2")
-```
-
-## Average Salary of Each Gender
-```{r}
-Mean_Salary_Gender <- prof_salary_tidy %>% 
-  group_by(Sex) %>% 
-  summarize(Mean_Salary=(mean(Salary, na.rm = TRUE)))
-Mean_Salary_Gender
-```
 
 
-## Plots Associated with Gender
-```{r}
-Mean_Salary_Gender %>% 
-  ggplot(aes(x=Sex, y=Mean_Salary,fill=Sex))+
-  geom_bar(stat="identity", alpha=0.9, color="black")+
-  labs(title = "Mean Salary By Gender",
-       x = "Gender",
-       y = "Mean Salary")+
-  theme(plot.title=element_text(size=18, face="bold", hjust = 0.5),
-        axis.text=element_text(size=8),
-        axis.title=element_text(size=12))+
-  scale_fill_brewer(palette = "Dark2")
-```
 
-
-## Plots Associated with Gender
+##DENSITY BY GENDER
 ```{r}
 prof_salary_tidy %>% 
   ggplot(aes(x=Salary, fill=Sex))+
@@ -155,7 +155,7 @@ prof_salary_tidy %>%
 ```
 
 
-## Plots Associated with Gender and Discipline
+##DISCIPLINES {.smaller}
 ```{r}
 prof_salary_tidy %>% 
   ggplot(aes(x=Discipline, y=Salary, fill=Sex))+
@@ -170,7 +170,7 @@ prof_salary_tidy %>%
 ```
 
 
-## Plots Associated with Years
+##YEARS SINCE RECEIVING A PHD {.smaller}
 ```{r}
 prof_salary_tidy %>% 
   ggplot(aes(x=Yrs_since_PhD, y=Salary, color=Rank))+
@@ -187,7 +187,7 @@ prof_salary_tidy %>%
 ```
 
 
-## Plots Associated with Years
+##YEARS SINCE SERVICNG {.smaller}
 ```{r}
 prof_salary_tidy %>% 
   ggplot(aes(x=Yrs_service, y=Salary, color=Rank))+
@@ -204,8 +204,10 @@ prof_salary_tidy %>%
 ```
 
 
-## Conclusion
+##CONCLUSIONS
 
-- Males have advantage over females being professors
-- If you are a teaching faculty, you should try to get promoted
-- Discipline B makes more money than discipline A
+-There is a visible difference between salary of male professors and female professors. However, the distribution of female and male professors is more shocking.
+
+- Assistant professors have the lowest average salary, while full professors have the highest average salary.
+
+- The longer a professor has been a PhD and serving, the higher salary s/he gets.
