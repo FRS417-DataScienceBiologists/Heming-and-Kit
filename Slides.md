@@ -30,7 +30,7 @@ Used data from: "https://vincentarelbundock.github.io/Rdatasets/datasets.html"
 ## )
 ```
 
-<img src="question.png" width="30%" style="display: block; margin: auto;" />
+<img src="image/question.png" width="30%" style="display: block; margin: auto;" />
 
 
 ##This dataset includes:
@@ -47,7 +47,7 @@ We used the following libraries:
 
 
 ```
-## ── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──
+## ── Attaching packages ─────────────────────────────────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 ```
 
 ```
@@ -58,7 +58,7 @@ We used the following libraries:
 ```
 
 ```
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ── Conflicts ────────────────────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ```
@@ -72,13 +72,13 @@ We used the following libraries:
 ##  n obs: 397 
 ##  n variables: 7 
 ## 
-## ── Variable type:character ─────────────────────────────────────────────────────
+## ── Variable type:character ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ##    variable missing complete   n min max empty n_unique
 ##  discipline       0      397 397   1   1     0        2
 ##        rank       0      397 397   4   9     0        3
 ##         sex       0      397 397   4   6     0        2
 ## 
-## ── Variable type:numeric ───────────────────────────────────────────────────────
+## ── Variable type:numeric ───────────────────────────────────────────────────────────────────────────────────────────────────────────────
 ##       variable missing complete   n      mean       sd    p0   p25    p50
 ##         salary       0      397 397 113706.46 30289.04 57800 91000 107300
 ##             X1       0      397 397    199      114.75     1   100    199
@@ -98,7 +98,7 @@ We used the following libraries:
 4. What is discipline?
 5. Does the amount of time you spent on the job affect your income?
 
-<img src="profledford.jpg" width="30%" style="display: block; margin: auto;" />
+<img src="image/profledford.jpg" width="30%" style="display: block; margin: auto;" />
 
 
 ##MAKE TIDY DATA
